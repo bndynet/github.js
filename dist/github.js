@@ -69,7 +69,7 @@ Github = function() {
         user: event.actor.login,
         userAvatar: event.actor.avatar_url,
         userUrl: event.actor.url,
-        date: (_.get(event, mapping.date)) ? _.get(event, mapping.date) : event.created_at,
+        date: new Date((_.get(event, mapping.date)) ? _.get(event, mapping.date) : event.created_at).toLocaleString().replace(',', ''),
         repo: event.repo.name.replace(`${self.user}/`, ""),
         repoUrl: event.repo.url,
         action: _.isObject(mapping.action) ? _.get(mapping.action, event.payload.action) : mapping.action,
