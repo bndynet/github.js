@@ -1,0 +1,22 @@
+{
+  "name": "github.js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/bndynet/github.js.git",
+  "author": "Bendy Zhang <zb@bndy.net>",
+  "license": "MIT",
+  "scripts": {
+    "build": "coffee -cbo dist/ src/",
+    "test": "npm run build && karma start karma.conf.js"
+  },
+  "devDependencies": {
+    "coffeescript": "^2.0.1",
+    "jasmine-core": "^2.8.0",
+    "jquery": "^3.2.1",
+    "karma": "^1.7.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-requirejs": "^1.1.0",
+    "requirejs": "^2.3.5"
+  }
+}

@@ -1,5 +1,6 @@
 Github = () ->
-    mappings = {
+    self = this
+    self.mappings = {
         CommitCommentEvent:
             action: ''
             title: 'payload'
@@ -20,10 +21,11 @@ Github = () ->
             title: ''
         IssueCommentEvent:
             action: 
-                created: 'New Comment for Issue'
+                created: 'Comment'
             title: 'payload.issue.title'
         IssuesEvent:
             action:
+                opened: 'New Issue'
                 closed: 'Close Issue'
             title: 'payload.issue.title'
             date: 'payload.issue.updated_at'
@@ -37,11 +39,11 @@ Github = () ->
             action: ''
             title: ''
     }
-    apiRoot = 'https://api.github.com'
-    user = 'bndynet'
 
+    apiRoot: 'https://api.github.com'
+    user: 'bndynet'
     getFullUrl: (relativeUrl) ->
-        "#{apiRoot}#{relativeUrl}"
+        "#{self.apiRoot}#{relativeUrl}"
     parseEvent: (event) ->
         mapping = mappings[event.type]
 
@@ -49,19 +51,26 @@ Github = () ->
         userAvatar: event.actor.avatar_url
         userUrl: event.actor.url
         date: if (_.get event, mapping.date) then (_.get event, mapping.date) else  event.created_at
-        repo: event.repo.name
+        repo: event.repo.name.replace "#{self.user}/", ""
         repoUrl: event.repo.url
         action: if _.isObject(mapping.action) then (_.get mapping.action, event.payload.action) else mapping.action
         title: _.get event, mapping.title
-    getEvents: ->
+    getEvents: (fnSuccess) ->
         self = this
-        new Promise (resolve, reject) ->
-            url = self.getFullUrl "/users/#{user}/events"
-            $.get url, (res) -> 
-                data = []
-                console.debug res
-                data.push self.parseEvent(item) for item in res
-                resolve data
-            return
+        url = self.getFullUrl "/users/#{self.user}/events"
+        $.get url, (res) -> 
+            data = []
+            data.push self.parseEvent(item) for item in res
+            fnSuccess data
+        return
+    render: (items, format) ->
+        result = '' 
+        for item in items
+            line = format
+            for key of item
+                line = line.replace "%#{key}%", item[key]
+            result += line
+        result
 
-window.github = Github()
+window.github = Github() if window?
+module.exports = Github if module?
