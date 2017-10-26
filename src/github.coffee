@@ -1,3 +1,5 @@
+$ = require 'jquery'
+
 Github = () ->
     self = this
     self.mappings = {
@@ -62,6 +64,12 @@ Github = () ->
             data = []
             data.push self.parseEvent(item) for item in res
             fnSuccess data
+        return
+    getGists: (fnSuccess) ->
+        self = this
+        url = self.getFullUrl "/users/#{self.user}/gists"
+        $.get url, (res) ->
+            fnSuccess data if fnSuccess
         return
     render: (items, format) ->
         result = '' 
