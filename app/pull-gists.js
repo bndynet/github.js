@@ -5,8 +5,7 @@ const https = require('https');
 
 const dataFolder = './temp/gists';
 const githubUser = 'bndynet';
-const template = `
----
+const template = `---
 layout: page
 title:  "%description%"
 breadcrumb: true
