@@ -1,5 +1,3 @@
-$ = require 'jquery'
-
 Github = () ->
     self = this
     self.mappings = {
