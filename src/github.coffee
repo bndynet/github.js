@@ -1,4 +1,4 @@
-Github = () ->
+Github = (username) ->
     self = this
     self.mappings = {
         CommitCommentEvent:
@@ -46,7 +46,7 @@ Github = () ->
     }
 
     apiRoot: 'https://api.github.com'
-    user: 'bndynet'
+    user: username || 'bndynet'
     getFullUrl: (relativeUrl) ->
         "#{self.apiRoot}#{relativeUrl}"
     parseEvent: (event) ->
@@ -79,7 +79,7 @@ Github = () ->
         for item in items
             line = format
             for key of item
-                line = line.replace "%#{key}%", item[key]
+                line = line.replace "%#{key}%", item[key] || ''
             result += line
         result
 

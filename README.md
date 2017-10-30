@@ -18,13 +18,9 @@ Wrapper for Github Api
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
 <script src="https://cdn.rawgit.com/bndynet/github.js/master/dist/github.js"></script>
 <script>
+  github = Github('bndynet');
   github.getEvents(function(events) {
     // TODO
   });
 </script>
 ```
-
-
-**IMPORTANT**
-
-Maybe you need to change the user to your github username for your service.
