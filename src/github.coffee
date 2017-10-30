@@ -38,6 +38,11 @@ Github = () ->
         WatchEvent:
             action: ''
             title: ''
+        ReleaseEvent:
+            action:
+                published: 'Release'
+            title: 'payload.release.name'
+            date: 'created_at'
     }
 
     apiRoot: 'https://api.github.com'
