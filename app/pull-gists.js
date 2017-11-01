@@ -8,6 +8,7 @@ const githubUser = 'bndynet';
 const template = `---
 layout: page
 title:  "%description%"
+teaser: "%teaser%"
 breadcrumb: true
 categories:
     - Gists
@@ -53,6 +54,10 @@ github.gists.getForUser({username: githubUser}, (err, res) => {
                         res.setEncoding('utf8');
                         res.on('data', (chunk) => {
                             fileContent = fileContent.replace('%content%', chunk);
+                            // replace teaser
+                            var firstline = chunk.trim().split('\n')[0] || '';
+                            fileContent = fileContent.replace('%teaser%', firstline.replace(/#/g, '').trim());
+                            
                             // write file
                             fs.writeFile(filepath, fileContent, (err) => {
                                 if (err) {
