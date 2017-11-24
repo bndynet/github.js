@@ -44,8 +44,11 @@ Github = function(username) {
       date: 'payload.issue.updated_at'
     },
     PullRequestEvent: {
-      action: '',
-      title: ''
+      action: {
+        reopened: 'Reopen Pull Request',
+        closed: 'Close Pull Request'
+      },
+      title: 'payload.pull_request.title'
     },
     PushEvent: {
       action: 'Push Code',

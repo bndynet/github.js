@@ -30,8 +30,10 @@ Github = (username) ->
             title: 'payload.issue.title'
             date: 'payload.issue.updated_at'
         PullRequestEvent:
-            action: ''
-            title: ''
+            action:
+                reopened: 'Reopen Pull Request'
+                closed: 'Close Pull Request'
+            title: 'payload.pull_request.title'
         PushEvent:
             action: 'Push Code'
             title: 'payload.commits[0].message'
