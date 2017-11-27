@@ -64,6 +64,12 @@ Github = function(username) {
       },
       title: 'payload.release.name',
       date: 'created_at'
+    },
+    MemberEvent: {
+      action: {
+        added: 'New Member'
+      },
+      title: 'payload.member.login'
     }
   };
   return {
