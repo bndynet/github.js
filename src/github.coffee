@@ -34,6 +34,11 @@ Github = (username) ->
                 reopened: 'Reopen Pull Request'
                 closed: 'Close Pull Request'
             title: 'payload.pull_request.title'
+        PullRequestReviewCommentEvent:
+            action:
+                created: 'Code Review'
+            title: 'payload.comment.body'
+            date: 'payload.comment.created_at'
         PushEvent:
             action: 'Push Code'
             title: 'payload.commits[0].message'
