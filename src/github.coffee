@@ -62,21 +62,26 @@ Github = (username) ->
         "#{self.apiRoot}#{relativeUrl}"
     parseEvent: (event) ->
         mapping = mappings[event.type]
-
-        user: event.actor.login
-        userAvatar: event.actor.avatar_url
-        userUrl: event.actor.url
-        date: new Date(if (_.get event, mapping.date) then (_.get event, mapping.date) else event.created_at).toLocaleString().replace(',', '')
-        repo: event.repo.name.replace "#{self.user}/", ""
-        repoUrl: event.repo.url
-        action: if _.isObject(mapping.action) then (_.get mapping.action, event.payload.action) else mapping.action
-        title: _.get event, mapping.title
+        if mapping
+            user: event.actor.login
+            userAvatar: event.actor.avatar_url
+            userUrl: event.actor.url
+            date: new Date(if (_.get event, mapping.date) then (_.get event, mapping.date) else event.created_at).toLocaleString().replace(',', '')
+            repo: event.repo.name.replace "#{self.user}/", ""
+            repoUrl: event.repo.url
+            action: if _.isObject(mapping.action) then (_.get mapping.action, event.payload.action) else mapping.action
+            title: _.get event, mapping.title
+        else
+            console.debug 'No Event Definiation:'
+            console.debug event
+            return null
     getEvents: (fnSuccess) ->
         self = this
         url = self.getFullUrl "/users/#{self.user}/events"
         $.get url, (res) -> 
-            data = []
-            data.push self.parseEvent(item) for item in res
+            parsedEvents = []
+            parsedEvents.push(self.parseEvent(item)) for item in res
+            data.push item for item in parsedEvents when item
             fnSuccess data
         return
     getGists: (fnSuccess) ->

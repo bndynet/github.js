@@ -88,27 +88,39 @@ Github = function(username) {
     parseEvent: function(event) {
       var mapping;
       mapping = mappings[event.type];
-      return {
-        user: event.actor.login,
-        userAvatar: event.actor.avatar_url,
-        userUrl: event.actor.url,
-        date: new Date((_.get(event, mapping.date)) ? _.get(event, mapping.date) : event.created_at).toLocaleString().replace(',', ''),
-        repo: event.repo.name.replace(`${self.user}/`, ""),
-        repoUrl: event.repo.url,
-        action: _.isObject(mapping.action) ? _.get(mapping.action, event.payload.action) : mapping.action,
-        title: _.get(event, mapping.title)
-      };
+      if (mapping) {
+        return {
+          user: event.actor.login,
+          userAvatar: event.actor.avatar_url,
+          userUrl: event.actor.url,
+          date: new Date((_.get(event, mapping.date)) ? _.get(event, mapping.date) : event.created_at).toLocaleString().replace(',', ''),
+          repo: event.repo.name.replace(`${self.user}/`, ""),
+          repoUrl: event.repo.url,
+          action: _.isObject(mapping.action) ? _.get(mapping.action, event.payload.action) : mapping.action,
+          title: _.get(event, mapping.title)
+        };
+      } else {
+        console.debug('No Event Definiation:');
+        console.debug(event);
+        return null;
+      }
     },
     getEvents: function(fnSuccess) {
       var url;
       self = this;
       url = self.getFullUrl(`/users/${self.user}/events`);
       $.get(url, function(res) {
-        var data, i, item, len;
-        data = [];
+        var i, item, j, len, len1, parsedEvents;
+        parsedEvents = [];
         for (i = 0, len = res.length; i < len; i++) {
           item = res[i];
-          data.push(self.parseEvent(item));
+          parsedEvents.push(self.parseEvent(item));
+        }
+        for (j = 0, len1 = parsedEvents.length; j < len1; j++) {
+          item = parsedEvents[j];
+          if (item) {
+            data.push(item);
+          }
         }
         return fnSuccess(data);
       });
