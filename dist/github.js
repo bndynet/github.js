@@ -110,12 +110,13 @@ Github = function(username) {
       self = this;
       url = self.getFullUrl(`/users/${self.user}/events`);
       $.get(url, function(res) {
-        var i, item, j, len, len1, parsedEvents;
+        var data, i, item, j, len, len1, parsedEvents;
         parsedEvents = [];
         for (i = 0, len = res.length; i < len; i++) {
           item = res[i];
           parsedEvents.push(self.parseEvent(item));
         }
+        data = [];
         for (j = 0, len1 = parsedEvents.length; j < len1; j++) {
           item = parsedEvents[j];
           if (item) {

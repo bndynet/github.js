@@ -81,6 +81,7 @@ Github = (username) ->
         $.get url, (res) -> 
             parsedEvents = []
             parsedEvents.push(self.parseEvent(item)) for item in res
+            data = []
             data.push item for item in parsedEvents when item
             fnSuccess data
         return
