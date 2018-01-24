@@ -17,11 +17,6 @@ author: Bendy Zhang
 
 %content%
 
-<!--more-->
-
-## Other Post Formats
-{: .t60 }
-{% include list-posts tag='post format' %}
 `;
 
 fs.ensureDir(dataFolder).then(() => {
