@@ -6,8 +6,8 @@ Github = function(username) {
   self = this;
   self.mappings = {
     CommitCommentEvent: {
-      action: '',
-      title: 'payload'
+      action: 'Comment',
+      title: 'payload.comment.body'
     },
     CreateEvent: {
       action: 'New Repo',
