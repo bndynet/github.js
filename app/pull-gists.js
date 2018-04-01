@@ -17,11 +17,6 @@ author: Bendy Zhang
 
 %content%
 
-<!--more-->
-
-## Other Post Formats
-{: .t60 }
-{% include list-posts tag='post format' %}
 `;
 
 fs.ensureDir(dataFolder).then(() => {
@@ -52,10 +47,14 @@ github.gists.getForUser({username: githubUser}, (err, res) => {
                     console.log('Request gist conent for `' + gist.description + '` (' + file + ') ...');
                     https.get(file, (res) => {
                         res.setEncoding('utf8');
+                        let responseBody = '';
                         res.on('data', (chunk) => {
-                            fileContent = fileContent.replace('%content%', chunk);
+                            responseBody += chunk;
+                        });
+                        res.on('end', () => {
+                            fileContent = fileContent.replace('%content%', responseBody);
                             // replace teaser
-                            var firstline = chunk.trim().split('\n')[0] || '';
+                            var firstline = responseBody.trim().split('\n')[0] || '';
                             fileContent = fileContent.replace('%teaser%', firstline.replace(/#/g, '').trim());
                             
                             // write file

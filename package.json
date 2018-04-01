@@ -10,7 +10,9 @@
     "test": "npm run build && karma start karma.conf.js",
     "pull:gists": "node ./app/pull-gists.js",
     "copy:gists": "cp -R ./temp/gists/ ../bndynet.github.io/_posts/",
-    "sync:gists": "npm run pull:gists && npm run copy:gists"
+    "win-copy:gists": "xcopy /Y .\\temp\\gists\\* ..\\bndynet.github.io\\_posts\\",
+    "sync:gists": "npm run pull:gists && npm run copy:gists",
+    "win-sync:gists": "npm run pull:gists && npm run win-copy:gists"
   },
   "devDependencies": {
     "coffeescript": "^2.0.1",
