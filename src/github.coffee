@@ -68,7 +68,7 @@ Github = (username) ->
             userUrl: event.actor.url
             date: new Date(if (_.get event, mapping.date) then (_.get event, mapping.date) else event.created_at).toLocaleString().replace(',', '')
             repo: event.repo.name.replace "#{self.user}/", ""
-            repoUrl: event.repo.url
+            repoUrl: 'https://github.com/' + event.repo.name
             action: if _.isObject(mapping.action) then (_.get mapping.action, event.payload.action) else mapping.action
             title: _.get event, mapping.title
         else
@@ -82,7 +82,7 @@ Github = (username) ->
             parsedEvents = []
             parsedEvents.push(self.parseEvent(item)) for item in res
             data = []
-            data.push item for item in parsedEvents when item
+            data.push item for item in parsedEvents when item.title.split(' ').length > 1
             fnSuccess data
         return
     getGists: (fnSuccess) ->

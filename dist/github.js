@@ -95,7 +95,7 @@ Github = function(username) {
           userUrl: event.actor.url,
           date: new Date((_.get(event, mapping.date)) ? _.get(event, mapping.date) : event.created_at).toLocaleString().replace(',', ''),
           repo: event.repo.name.replace(`${self.user}/`, ""),
-          repoUrl: event.repo.url,
+          repoUrl: 'https://github.com/' + event.repo.name,
           action: _.isObject(mapping.action) ? _.get(mapping.action, event.payload.action) : mapping.action,
           title: _.get(event, mapping.title)
         };
@@ -119,7 +119,7 @@ Github = function(username) {
         data = [];
         for (j = 0, len1 = parsedEvents.length; j < len1; j++) {
           item = parsedEvents[j];
-          if (item) {
+          if (item.title.split(' ').length > 1) {
             data.push(item);
           }
         }
