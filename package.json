@@ -8,11 +8,14 @@
   "scripts": {
     "build": "coffee -cbo dist/ src/",
     "test": "npm run build && karma start karma.conf.js",
+    "gist-sync": "npm run pull:gists && npm run copy:blog && npm run copy:wiki",
+    "win-gist-sync": "npm run pull:gists && npm run win-copy:blog && npm run copy:wiki",
+    
     "pull:gists": "node ./app/pull-gists.js",
-    "copy:gists": "cp -R ./temp/gists/ ../bndynet.github.io/_posts/",
-    "win-copy:gists": "xcopy /Y .\\temp\\gists\\* ..\\bndynet.github.io\\_posts\\",
-    "sync:gists": "npm run pull:gists && npm run copy:gists",
-    "win-sync:gists": "npm run pull:gists && npm run win-copy:gists"
+    "copy:blog": "cp -R ./temp/blog/ ../bndy.net/_posts/",
+    "copy:wiki": "cp -R ./temp/wiki/ ../wiki.bndy.net/content/",
+    "win-copy:blog": "xcopy /Y .\\temp\\blog\\* ..\\bndy.net\\_posts\\",
+    "win-copy:wiki": "xcopy /Y .\\temp\\wiki\\* ..\\wiki.bndy.net\\content\\"
   },
   "devDependencies": {
     "coffeescript": "^2.0.1",

@@ -3,9 +3,12 @@ const path = require('path');
 const GitHubApi = require('github');
 const https = require('https');
 
-const dataFolder = './temp/gists';
+const workspace = './temp';
+const fileFolder = workspace + '/_files';
+const wikiFolder = workspace + '/wiki';
+const blogFolder = workspace + '/blog';
 const githubUser = 'bndynet';
-const template = `---
+const blogTemplate = `---
 layout: page
 title:  "%description%"
 teaser: "%teaser%"
@@ -19,8 +22,16 @@ author: Bendy Zhang
 
 `;
 
-fs.ensureDir(dataFolder).then(() => {
-    console.log('The folder is ready.');
+fs.removeSync(workspace);
+
+fs.ensureDir(fileFolder).then(() => { 
+    console.log('The folder is ready for gist files.');
+});
+fs.ensureDir(wikiFolder).then(() => {
+    console.log('The folder is ready for wiki.');
+});
+fs.ensureDir(blogFolder).then(() => {
+    console.log('The folder is ready for blog.');
 });
 
 const github = new GitHubApi({});
@@ -32,40 +43,68 @@ github.gists.getForUser({username: githubUser}, (err, res) => {
 
     const gists = res.data;
     for (gist of gists) {
-        const dt = gist.created_at.split('T')[0];
-        const filename = dt + '-' + gist.description.replace(/[^\w+]/g, '-') + '.md';
-        const filepath = path.join(dataFolder, filename);
-        let fileContent = template;
-        for (const key in gist) {
-            fileContent = fileContent.replace('%' + key + '%', gist[key]);
-        }
         for (const key in gist.files) {
-            if (gist.files.hasOwnProperty(key)) { 
-                const file = gist.files[key].raw_url;
-                if (file) {
-                    // request gist content
-                    console.log('Request gist conent for `' + gist.description + '` (' + file + ') ...');
-                    https.get(file, (res) => {
-                        res.setEncoding('utf8');
-                        let responseBody = '';
-                        res.on('data', (chunk) => {
-                            responseBody += chunk;
+            if (!gist.files.hasOwnProperty(key)) { 
+                continue;
+            }
+
+            const file = gist.files[key];
+            const filename = file.filename;
+            const fileurl = file.raw_url;
+            const filepath = path.join(fileFolder, filename);
+
+            // for blog
+            const dt = gist.created_at.split('T')[0];
+            const blogFilename = dt + '-' + filename;
+            const blogFilepath = path.join(blogFolder, blogFilename);
+            // for wiki
+            const wikiFilepath = path.join(wikiFolder, filename);
+
+            let filecontent = '';
+            let blogContent = blogTemplate;
+            for (const key in gist) {
+                blogContent = blogContent.replace('%' + key + '%', gist[key]);
+            }
+
+            if (fileurl) {
+                // request gist content
+                console.log('Request gist content for `' + gist.description + '` (' + fileurl + ') ...');
+                https.get(fileurl, (res) => {
+                    res.setEncoding('utf8');
+                    res.on('data', (chunk) => {
+                        filecontent += chunk;
+                    });
+                    res.on('end', () => {
+                        // gist files
+                        fs.writeFile(filepath, filecontent, (err) => {
+                            if (err) {
+                                console.error(err);
+                            }
                         });
-                        res.on('end', () => {
-                            fileContent = fileContent.replace('%content%', responseBody);
-                            // replace teaser
-                            var firstline = responseBody.trim().split('\n')[0] || '';
-                            fileContent = fileContent.replace('%teaser%', firstline.replace(/#/g, '').trim());
-                            
-                            // write file
-                            fs.writeFile(filepath, fileContent, (err) => {
+
+                        if (filepath.endsWith('.md')) {
+                            // wiki
+                            fs.writeFile(wikiFilepath, filecontent, (err) => {
                                 if (err) {
                                     console.error(err);
                                 }
                             });
-                        });
+
+                            // blog
+                            blogContent = blogContent.replace('%content%', filecontent);
+                            // replace teaser
+                            var firstline = blogContent.trim().split('\n')[0] || '';
+                            blogContent = blogContent.replace('%teaser%', firstline.replace(/#/g, '').trim());
+                            
+                            // write file
+                            fs.writeFile(blogFilepath, blogContent, (err) => {
+                                if (err) {
+                                    console.error(err);
+                                }
+                            });
+                        }
                     });
-                }
+                });
             }
         }
     }
