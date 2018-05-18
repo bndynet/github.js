@@ -82,7 +82,7 @@ Github = (username) ->
             parsedEvents = []
             parsedEvents.push(self.parseEvent(item)) for item in res
             data = []
-            data.push item for item in parsedEvents when item and item.title.split(' ').length > 1
+            data.push item for item in parsedEvents when item and item.title and item.title.split(' ').length > 1
             fnSuccess data
         return
     getGists: (fnSuccess) ->
