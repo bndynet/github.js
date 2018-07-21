@@ -5,7 +5,6 @@ const https = require('https');
 
 const workspace = './temp';
 const fileFolder = workspace + '/_files';
-const wikiFolder = workspace + '/wiki';
 const blogFolder = workspace + '/blog';
 const githubUser = 'bndynet';
 const blogTemplate = `---
@@ -26,9 +25,6 @@ fs.removeSync(workspace);
 
 fs.ensureDir(fileFolder).then(() => { 
     console.log('The folder is ready for gist files.');
-});
-fs.ensureDir(wikiFolder).then(() => {
-    console.log('The folder is ready for wiki.');
 });
 fs.ensureDir(blogFolder).then(() => {
     console.log('The folder is ready for blog.');
@@ -57,8 +53,6 @@ github.gists.getForUser({username: githubUser}, (err, res) => {
             const dt = gist.created_at.split('T')[0];
             const blogFilename = dt + '-' + filename;
             const blogFilepath = path.join(blogFolder, blogFilename);
-            // for wiki
-            const wikiFilepath = path.join(wikiFolder, filename);
 
             let filecontent = '';
             let blogContent = blogTemplate;
@@ -83,17 +77,11 @@ github.gists.getForUser({username: githubUser}, (err, res) => {
                         });
 
                         if (filepath.endsWith('.md')) {
-                            // wiki
-                            fs.writeFile(wikiFilepath, filecontent, (err) => {
-                                if (err) {
-                                    console.error(err);
-                                }
-                            });
-
                             // blog
                             blogContent = blogContent.replace('%content%', filecontent);
                             // replace teaser
-                            var firstline = blogContent.trim().split('\n')[0] || '';
+                            var firstline = filecontent.trim().split('\n')[0] || '';
+                            console.log(filecontent.trim().split('\n')[0]);
                             blogContent = blogContent.replace('%teaser%', firstline.replace(/#/g, '').trim());
                             
                             // write file
