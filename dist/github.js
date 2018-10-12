@@ -62,8 +62,10 @@ Github = function(username) {
       title: 'payload.commits[0].message'
     },
     WatchEvent: {
-      action: '',
-      title: ''
+      action: {
+        started: 'Star Repo'
+      },
+      title: 'repo.name'
     },
     ReleaseEvent: {
       action: {
