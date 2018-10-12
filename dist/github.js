@@ -121,7 +121,7 @@ Github = function(username) {
         data = [];
         for (j = 0, len1 = parsedEvents.length; j < len1; j++) {
           item = parsedEvents[j];
-          if (item && item.title && item.title.split(' ').length > 1) {
+          if (item && item.title) {
             data.push(item);
           }
         }
