@@ -77,12 +77,14 @@ github.gists.getForUser({username: githubUser}, (err, res) => {
                         });
 
                         if (filepath.endsWith('.md')) {
-                            // blog
-                            blogContent = blogContent.replace('%content%', filecontent);
                             // replace teaser
-                            var firstline = filecontent.trim().split('\n')[0] || '';
-                            console.log(filecontent.trim().split('\n')[0]);
-                            blogContent = blogContent.replace('%teaser%', firstline.replace(/#/g, '').trim());
+                            var teaser = (filecontent.trim().split('\n')[0] || '').trim();
+                            if (teaser.startsWith('#') || teaser.startsWith('```')) {
+                                teaser = '';
+                            }
+                            blogContent = blogContent.replace('%teaser%', teaser);
+                            // blog
+                            blogContent = blogContent.replace('%content%', filecontent.replace(teaser, '').trim());
 
                             // write file
                             fs.writeFile(blogFilepath, blogContent, (err) => {
