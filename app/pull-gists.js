@@ -23,7 +23,7 @@ author: Bendy Zhang
 
 fs.removeSync(workspace);
 
-fs.ensureDir(fileFolder).then(() => { 
+fs.ensureDir(fileFolder).then(() => {
     console.log('The folder is ready for gist files.');
 });
 fs.ensureDir(blogFolder).then(() => {
@@ -40,12 +40,12 @@ github.gists.getForUser({username: githubUser}, (err, res) => {
     const gists = res.data;
     for (gist of gists) {
         for (const key in gist.files) {
-            if (!gist.files.hasOwnProperty(key)) { 
+            if (!gist.files.hasOwnProperty(key)) {
                 continue;
             }
 
             const file = gist.files[key];
-            const filename = file.filename;
+            const filename = gist.id + '-' + file.filename;
             const fileurl = file.raw_url;
             const filepath = path.join(fileFolder, filename);
 
@@ -83,7 +83,7 @@ github.gists.getForUser({username: githubUser}, (err, res) => {
                             var firstline = filecontent.trim().split('\n')[0] || '';
                             console.log(filecontent.trim().split('\n')[0]);
                             blogContent = blogContent.replace('%teaser%', firstline.replace(/#/g, '').trim());
-                            
+
                             // write file
                             fs.writeFile(blogFilepath, blogContent, (err) => {
                                 if (err) {
